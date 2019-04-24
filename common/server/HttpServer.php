@@ -1,6 +1,6 @@
 <?php
 namespace swlms\common\server;
-use swlms\common\Router;
+use swlms\common\router\HttpRouter;
 
 class HttpServer{
     public $http_server;
@@ -17,7 +17,7 @@ class HttpServer{
     }
 
     public function onRequest($request, $response){
-        $handle_result = Router::handleRequest($request);
+        $handle_result = HttpRouter::handleRequest($request);
         $response->header('Content-Type', 'application/json');
         $response->end(json_encode($handle_result));
     }

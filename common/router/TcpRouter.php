@@ -1,16 +1,17 @@
 <?php
-namespace swlms\common;
-use Swoole\Http\Request;
-use swlms\common\protocal\HttpProtocal;
+namespace swlms\common\router;
+use swlms\common\protocal\TcpProtocal;
+use swlms\common\ServerException;
 use swlms\common\Response;
 
-class Router{
-    public static function handleRequest(Request $request){
-        $http_protocal = new HttpProtocal();
+class TcpRouter{
+    public static function handleRequest($tcp_message){
+        $tcp_protocal = new TcpProtocal();
         try{
-            if($http_protocal->verify($request->post)){
-                $http_protocal->load();
-                $action = $http_protocal->action;
+            $tcp_message = json_decode($tcp_message, true);
+            if($tcp_protocal->verify($tcp_message)){
+                $tcp_protocal->load();
+                $action = $tcp_protocal->action;
                 list($non, $service_name, $action_name) = explode('/', $action);
                 unset($non);
                 $service_class = 'swlms\\provider\\'.ucfirst($service_name).'Service';
@@ -21,24 +22,24 @@ class Router{
                     throw new ServerException(ServerException::SERVER_SERVICE_NOT_EXIST_ERROR);
                 }
                 if(method_exists($service, $action_name)){
-                    $before_result = $service->beforeAction($http_protocal);
+                    $before_result = $service->beforeAction($tcp_protocal);
                     if(true !== $before_result){
                         throw new ServerException(ServerException::SERVER_SERVICE_BEFORE_ACTION_ERROR);
                     }
-                    $action_result = $service->$action_name($http_protocal, $http_protocal->data);
-                    $after_result = $service->afterAction($http_protocal);
+                    $action_result = $service->$action_name($tcp_protocal);
+                    $after_result = $service->afterAction($tcp_protocal);
                     if(true !== $after_result){
                         throw new ServerException(ServerException::SERVER_SERVICE_AFTER_ACTION_ERROR);
                     }
-                    return Response::success($http_protocal, $action_result);
+                    return Response::success($tcp_protocal, $action_result);
                 }else{
                     throw new ServerException(ServerException::SERVER_ACTION_NOT_EXIST_ERROR);
                 }
             }else{
-                throw new ServerException(ServerException::SERVER_HTTP_PROTOCAL_VERIFY_ERROR, json_encode($http_protocal->getErrors()));
+                throw new ServerException(ServerException::SERVER_HTTP_PROTOCAL_VERIFY_ERROR, json_encode($tcp_protocal->getErrors()));
             }
         }catch (ServerException $se){
-            return Response::error($http_protocal, $se->getCode(), $se->getMessage());
+            return Response::error($tcp_protocal, $se->getCode(), $se->getMessage());
         }
     }
 }

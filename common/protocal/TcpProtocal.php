@@ -1,17 +1,15 @@
 <?php
 namespace swlms\common\protocal;
 
-class HttpProtocal extends Protocal{
+class TcpProtocal extends Protocal{
     public $action;
-    public $data;
-    public $request_id;
-    public $request_microtime;
-    public $debug;
+    public $service_ip;
+    public $service_port;
+    public $dependence;
     private $_verify_rules;
     private $_verifier;
     private $_data;
     private $_verify_errors;
-
     public function __construct(){
         $this->setVerifyRules();
         $this->_verifier = new Verifier($this->_verify_rules);
@@ -19,19 +17,17 @@ class HttpProtocal extends Protocal{
 
     public function load(){
         $this->action = $this->_data['action'];
-        $this->data = $this->_data['data'];
-        $this->request_id = $this->_data['request_id'];
-        $this->request_microtime = $this->_data['request_microtime'];
-        $this->debug = $this->_data['debug'];
+        $this->service_ip = $this->_data['service_ip'];
+        $this->service_port = $this->_data['service_port'];
+        $this->dependence = $this->_data['dependence'];
     }
 
-    final public function setVerifyRules(){
+    public function setVerifyRules(){
         $this->_verify_rules = [
-            'action' => 'required|string',
-            'data' => 'sometimes|array',
-            'request_id' => 'required|string|uuid1',
-            'request_microtime' => 'required|string',
-            'debug' => 'required|string|[0,1]',
+            'action' => 'required|string|[up-regist,down-notify]',
+            'service_ip' => 'required|string|ip',
+            'service_port' => 'required|integer|[0-65535]',
+            'dependence' => 'required|array',
         ];
     }
 

@@ -36,7 +36,7 @@ class Verifier{
     }
 
     private function _verifyFrequenct($frequence, $data=false){
-        if($frequence == 'required' && !$data){
+        if($frequence == 'required' && false === $data){
             return false;
         }
         return true;
@@ -67,6 +67,11 @@ class Verifier{
                     return false;
                 }
             }catch (\Exception $e){
+                return false;
+            }
+        }
+        if($scope == 'ip'){
+            if(false === filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE)){
                 return false;
             }
         }

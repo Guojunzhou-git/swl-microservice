@@ -1,9 +1,9 @@
 <?php
 namespace swlms\common;
-use swlms\common\protocal\HttpProtocal;
+use swlms\common\protocal\Protocal;
 
 class Response{
-    final public static function success(HttpProtocal $hp, $data){
+    final public static function success(Protocal $protocal, $data){
         return [
             'data' => $data,
             'code' => 0,
@@ -11,7 +11,7 @@ class Response{
         ];
     }
 
-    final public static function error(HttpProtocal $hp, $code, $msg, $data=[]){
+    final public static function error(Protocal $protocal, $code, $msg, $data=[]){
         return [
             'data' => $data,
             'code' => $code,

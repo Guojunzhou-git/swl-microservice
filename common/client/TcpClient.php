@@ -19,13 +19,18 @@ class TcpClient{
         echo 'This client connected: '.PHP_EOL;
         echo 'client: '.json_encode($client).PHP_EOL;
         echo PHP_EOL;
-        $client->send('Am I arrived???');
+        $client->send(json_encode([
+            'action' => '/config/regist',
+            'service_ip' => '127.0.0.1',
+            'service_port' => 100001,
+            'dependence' => [],
+        ]));
     }
 
     public function onReceive($client, $data){
         echo 'This client receive msg from server: '.PHP_EOL;
         echo 'client: '.json_encode($client).PHP_EOL;
-        echo 'data: '.json_encode($data).PHP_EOL;
+        echo 'data: '.$data.PHP_EOL;
         echo PHP_EOL;
     }
 

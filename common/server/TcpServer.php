@@ -1,5 +1,6 @@
 <?php
 namespace swlms\common\server;
+use swlms\common\router\TcpRouter;
 
 class TcpServer{
     public $http_server;
@@ -23,10 +24,11 @@ class TcpServer{
         echo 'A tcp client send msg to server: '.PHP_EOL;
         echo 'server: '.json_encode($server).PHP_EOL;
         echo 'client: '.json_encode($client).PHP_EOL;
-        echo 'from_id: '.json_encode($from_id).PHP_EOL;
-        echo 'data: '.json_encode($data).PHP_EOL;
+        echo 'from_id: '.$from_id.PHP_EOL;
+        echo 'data: '.$data.PHP_EOL;
         echo PHP_EOL;
-        $server->send($client, 'eh, i received, waiting for callback...');
+        $handle_result = TcpRouter::handleRequest($data);
+        $server->send($client, json_encode($handle_result));
         $server->close($client);
     }
 
