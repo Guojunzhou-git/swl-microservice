@@ -1,0 +1,21 @@
+{
+    "name": "guojz/swl-microservice-framework",
+    "description": "A php microservice framework using swoole",
+    "authors": [
+        {
+            "name": "guojz",
+            "email": "web_scott@163.com"
+        }
+    ],
+    "require": {
+        "symfony/dotenv": "^4.2",
+        "ramsey/uuid": "^3.8",
+        "swoole/ide-helper": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "swlms\\common\\": "common/",
+            "swlms\\provider\\": "provider/"
+        }
+    }
+}
